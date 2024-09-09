@@ -1,0 +1,161 @@
+export function generateMap(width, height, start, end) {
+    
+    // Función para generar un valor aleatorio entre 1 y 10
+    function getRandomValue() {
+        return Math.floor(Math.random() * 10) + 1;
+    }
+
+    // Inicializar el mapa con valores aleatorios entre 1 y 10
+    const map = Array.from({ length: height }, () => Array.from({ length: width }, getRandomValue));
+
+    // Crear muros en los bordes y dejar espacio para una salida
+    for (let x = 0; x < width; x++) {
+        map[0][x] = 10; // Borde superior
+        map[height - 1][x] = 10; // Borde inferior
+    }
+    for (let y = 0; y < height; y++) {
+        map[y][0] = 10; // Borde izquierdo
+        map[y][width - 1] = 10; // Borde derecho
+    }
+
+    // Función para verificar si una posición es válida
+    function isValid(x, y) {
+        return x > 0 && y > 0 && x < width - 1 && y < height - 1 && map[y][x] >= 1 && map[y][x] <= 10;
+    }
+
+    // Función recursiva para crear un camino usando DFS
+    function createPath(x, y) {
+        // Marcar la celda actual como parte del camino (valor 0)
+        map[y][x] = 0;
+
+        // Direcciones de movimiento: arriba, abajo, izquierda, derecha
+        const directions = [
+            [0, -1], [0, 1], [-1, 0], [1, 0]
+        ];
+
+        // Mezclar direcciones para generar caminos aleatorios
+        directions.sort(() => Math.random() - 0.5);
+
+        for (const [dx, dy] of directions) {
+            const newX = x + dx;
+            const newY = y + dy;
+
+            // Crear camino solo si la posición es válida y al menos 2 de las 4 direcciones adyacentes están rodeadas de paredes
+            if (isValid(newX, newY)) {
+                let walls = 0;
+                for (const [adx, ady] of directions) {
+                    const adjX = newX + adx;
+                    const adjY = newY + ady;
+                    if (adjX > 0 && adjY > 0 && adjX < width - 1 && adjY < height - 1 && map[adjY][adjX] <= 10 && map[adjY][adjX] >= 1) {
+                        walls++;
+                    }
+                }
+
+                // Continuar si está rodeado de paredes por al menos 3 lados
+                if (walls >= 2 || (newX === end.x && newY === end.y)) {
+                    createPath(newX, newY);
+                }
+            }
+        }
+    }
+
+    // Crear el camino desde el punto de inicio al final
+    createPath(start.x, start.y);
+
+    // Asegurar que el punto final esté accesible
+    map[end.y][end.x] = 0;
+
+    // Crear una salida en el borde del mapa
+    const exitPosition = {
+        x: Math.floor(Math.random() * (width - 2)) + 1,
+        y: height - 1 // Colocar la salida en el borde inferior
+    };
+    map[exitPosition.y][exitPosition.x] = 0;
+
+    // Convertir el mapa a una estructura similar al formato dado
+    const flattenedMap = map.flat();
+    const lvl = {
+        layers: [
+            {
+                opacity: 1,
+                name: "Tile Layer 1",
+                width: width,
+                data: flattenedMap,
+                height: height,
+                visible: true,
+                y: 0,
+                x: 0,
+                type: "tilelayer",
+                id: 1
+            },
+            {
+                opacity: 1,
+                name: "Object Layer 1",
+                visible: true,
+                objects: [
+                    {
+                        name: "start",
+                        width: 16,
+                        height: 16,
+                        visible: true,
+                        gid: 28,
+                        y: start.y * 16,
+                        x: start.x * 16,
+                        rotation: 0,
+                        type: "player",
+                        id: 1
+                    },
+                    {
+                        name: "end",
+                        width: 16,
+                        height: 16,
+                        visible: true,
+                        gid: 29,
+                        y: end.y * 16,
+                        x: end.x * 16,
+                        rotation: 0,
+                        type: "goal",
+                        id: 2
+                    },
+                    {
+                        name: "exit",
+                        width: 16,
+                        height: 16,
+                        visible: true,
+                        gid: 30,
+                        y: exitPosition.y * 16,
+                        x: exitPosition.x * 16,
+                        rotation: 0,
+                        type: "exit",
+                        id: 3
+                    }
+                ],
+                draworder: "topdown",
+                y: 0,
+                x: 0,
+                type: "objectgroup",
+                id: 2
+            }
+        ],
+        orientation: "orthogonal",
+        tileheight: 16,
+        tiledversion: "1.2.4",
+        tilewidth: 16,
+        version: 1.2,
+        height: height,
+        width: width,
+        renderorder: "right-down",
+        nextlayerid: 3,
+        tilesets: [
+            {
+                source: "tileset.tsx",
+                firstgid: 1
+            }
+        ],
+        infinite: false,
+        type: "map",
+        nextobjectid: 4
+    };
+
+    return lvl;
+}
