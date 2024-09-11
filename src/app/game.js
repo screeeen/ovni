@@ -9,9 +9,7 @@ import {
 	ACCEL,
 	FRICTION,
 	IMPULSE,
-	DIAMOND_COLORS,
 	KEY,
-	fps,
 	step,
 	canvas,
 	ctx,
@@ -43,28 +41,28 @@ var t2p = (t) => {
 
 function onkey(ev, key, down) {
 	switch (key) {
-		case KEY.LEFT:
-			player.left = down;
-			ev.preventDefault();
-			return false;
-		case KEY.RIGHT:
-			player.right = down;
-			ev.preventDefault();
-			return false;
+		// case KEY.LEFT:
+		// 	player.left = down;
+		// 	ev.preventDefault();
+		// 	return false;
+		// case KEY.RIGHT:
+		// 	player.right = down;
+		// 	ev.preventDefault();
+		// 	return false;
 
-		case KEY.UP:
-			player.up = down;
-			ev.preventDefault();
-			return false;
+		// case KEY.UP:
+		// 	player.up = down;
+		// 	ev.preventDefault();
+		// 	return false;
 
-		case KEY.DOWN:
-			player.down = down;
-			ev.preventDefault();
-			return false;
+		// case KEY.DOWN:
+		// 	player.down = down;
+		// 	ev.preventDefault();
+		// 	return false;
 
 		case KEY.SPACE:
-			player.jump = down;
-			// if (!down) changePlayerDirection()
+			// player.jump = down;
+			if (!down) changePlayerDirection();
 			ev.preventDefault();
 			return false;
 	}
@@ -72,7 +70,6 @@ function onkey(ev, key, down) {
 
 function update(dt) {
 	updatePlayer(dt);
-	updateEnemies(dt);
 }
 
 function changePlayerDirection() {
@@ -81,12 +78,13 @@ function changePlayerDirection() {
 }
 
 function updatePlayer(dt) {
-	updateEntity(player, dt, true);
+	// updateEntity(player, dt, true);
+	updatePlayer4ways();
 }
 
 function updatePlayer4ways() {
-	var friction = player.friction,
-		accel = player.accel;
+	// var friction = player.friction,
+	var accel = player.accel;
 
 	checkPlayerPositions(player);
 

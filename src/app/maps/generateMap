@@ -1,10 +1,7 @@
 export function generateMap(width, height, start, end) {
 	// Función para generar un valor aleatorio entre 1 y 10
 	function getRandomValue() {
-		// const num = Math.floor(Math.random() * 10) + 2;
-		// const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
-		const num = 10;
-		// console.log('num', num)
+		const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
 		return num;
 	}
 
@@ -21,22 +18,49 @@ export function generateMap(width, height, start, end) {
 	// 	map[y][width - 1] = 10; // Borde derecho
 	// }
 
+	// Agrupar obstáculos en bloques de 5x5
+	function placeObstacles() {
+		for (let y = 1; y < height - 5; y += 6) {
+			// Saltar 5 filas cada vez
+			for (let x = 1; x < width - 5; x += 6) {
+				// Saltar 5 columnas cada vez
+				// Crear un grupo de 5x5 obstáculos
+				for (let dy = 0; dy < 5; dy++) {
+					for (let dx = 0; dx < 5; dx++) {
+						if (x + dx < width && y + dy < height) {
+							map[y + dy][x + dx] = 10; // Establecer como obstáculo
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Llamar a la función para agrupar obstáculos
+	placeObstacles();
+
 	// Función para verificar si una posición es válida
 	function isValid(x, y) {
 		return x > 0 && y > 0 && x < width - 1 && y < height - 1 && map[y][x] >= 1 && map[y][x] <= 10;
 	}
 
-	// Función recursiva para crear un camino usando DFS
+	// Función recursiva para crear un camino usando DFS con caminos más amplios
 	function createPath(x, y) {
-		// Marcar la celda actual como parte del camino (valor 0)
-		map[y][x] = 0;
+		// Marcar un área de 2x2 como parte del camino (valor 0)
+		for (let dx = 0; dx < 2; dx++) {
+			for (let dy = 0; dy < 2; dy++) {
+				if (x + dx < width && y + dy < height) {
+					map[y + dy][x + dx] = 0;
+				}
+			}
+		}
 
 		// Direcciones de movimiento: arriba, abajo, izquierda, derecha
 		const directions = [
-			[0, -1],
-			[0, 1],
-			[-1, 0],
-			[1, 0],
+			[0, -2],
+			[0, 2],
+			[-2, 0],
+			[2, 0],
 		];
 
 		// Mezclar direcciones para generar caminos aleatorios
@@ -65,7 +89,7 @@ export function generateMap(width, height, start, end) {
 				}
 
 				// Continuar si está rodeado de paredes por al menos 3 lados
-				if (walls >= 1 || (newX === end.x && newY === end.y)) {
+				if (walls >= 2 || (newX === end.x && newY === end.y)) {
 					createPath(newX, newY);
 				}
 			}
@@ -74,7 +98,7 @@ export function generateMap(width, height, start, end) {
 
 	createPath(start.x, start.y);
 
-	// hardcoded
+	// hardcoded: limpiar camino hacia el final
 	map[start.y - 1][start.x] = 0;
 	map[end.y][end.x - 1] = 0;
 	map[end.y - 1][end.x - 1] = 0;
@@ -124,18 +148,6 @@ export function generateMap(width, height, start, end) {
 						type: 'goal',
 						id: 2,
 					},
-					// {
-					// 	name: 'exit',
-					// 	width: 16,
-					// 	height: 16,
-					// 	visible: true,
-					// 	gid: 30,
-					// 	y: exitPosition.y * 16,
-					// 	x: exitPosition.x * 16,
-					// 	rotation: 0,
-					// 	type: 'exit',
-					// 	id: 3,
-					// },
 				],
 				draworder: 'topdown',
 				y: 0,

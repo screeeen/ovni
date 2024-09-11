@@ -19,8 +19,8 @@ export function genNewMap() {
 	// MAP.th = Math.floor(Math.random() * (16 - 10) + 10);
 	const width = MAP.tw;
 	const height = MAP.th;
-	const start = { x: 1, y: 1 }; // Coordenadas de inicio
-	const end = { x: MAP.tw - 1, y: MAP.th - 1 }; // Coordenadas de fin
+	const start = { x: 2, y: 2 };
+	const end = { x: MAP.tw - 1, y: MAP.th - 1 };
 
 	const lvl_0 = generateMap(width, height, start, end);
 
