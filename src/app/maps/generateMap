@@ -1,8 +1,8 @@
 export function generateMap(width, height, start, end) {
 	// Función para generar un valor aleatorio entre 1 y 10
 	function getRandomValue() {
-		// const num = Math.floor(Math.random() * (10 - 8 + 1)) + 8;
-		const num = 10;
+		const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
+		// const num = 10;
 		return num;
 	}
 
@@ -94,13 +94,13 @@ export function generateMap(width, height, start, end) {
 
 	// Crear muros en los bordes y dejar espacio para una salida
 	for (let x = 0; x < width; x++) {
-		map[0][x] = 10; // Borde superior
+		map[0][x] = getRandomValue(); // Borde superior
 		// map[height - 1][x] = 10; // Borde inferior
-		map[height - 1][x] = 10; // Borde inferior
+		map[height - 1][x] = getRandomValue(); // Borde inferior
 	}
 	for (let y = 0; y < height; y++) {
-		map[y][0] = 10; // Borde izquierdo
-		map[y][width - 1] = 10; // Borde derecho
+		map[y][0] = getRandomValue(); // Borde izquierdo
+		map[y][width - 1] = getRandomValue(); // Borde derecho
 	}
 
 	// hardcoded: limpiar camino hacia el final
