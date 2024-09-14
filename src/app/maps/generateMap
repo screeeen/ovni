@@ -1,32 +1,26 @@
 export function generateMap(width, height, start, end) {
 	// Función para generar un valor aleatorio entre 1 y 10
 	function getRandomValue() {
-		const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
+		// const num = Math.floor(Math.random() * (10 - 8 + 1)) + 8;
+		const num = 10;
 		return num;
 	}
 
 	// Inicializar el mapa con valores aleatorios entre 1 y 10
 	const map = Array.from({ length: height }, () => Array.from({ length: width }, getRandomValue));
 
-	// Crear muros en los bordes y dejar espacio para una salida
-	// for (let x = 0; x < width; x++) {
-	// 	map[0][x] = 10; // Borde superior
-	// 	map[height - 1][x] = 10; // Borde inferior
-	// }
-	// for (let y = 0; y < height; y++) {
-	// 	map[y][0] = 10; // Borde izquierdo
-	// 	map[y][width - 1] = 10; // Borde derecho
-	// }
-
 	// Agrupar obstáculos en bloques de 5x5
+	console.log('height', height);
+	console.log('width', width);
+
 	function placeObstacles() {
-		for (let y = 1; y < height - 5; y += 6) {
+		for (let y = 0; y < height; y += 4) {
 			// Saltar 5 filas cada vez
-			for (let x = 1; x < width - 5; x += 6) {
+			for (let x = 0; x < width; x += 4) {
 				// Saltar 5 columnas cada vez
 				// Crear un grupo de 5x5 obstáculos
-				for (let dy = 0; dy < 5; dy++) {
-					for (let dx = 0; dx < 5; dx++) {
+				for (let dy = 0; dy < 4; dy++) {
+					for (let dx = 0; dx < 4; dx++) {
 						if (x + dx < width && y + dy < height) {
 							map[y + dy][x + dx] = 10; // Establecer como obstáculo
 						}
@@ -37,7 +31,7 @@ export function generateMap(width, height, start, end) {
 	}
 
 	// Llamar a la función para agrupar obstáculos
-	placeObstacles();
+	// placeObstacles();
 
 	// Función para verificar si una posición es válida
 	function isValid(x, y) {
@@ -98,9 +92,26 @@ export function generateMap(width, height, start, end) {
 
 	createPath(start.x, start.y);
 
+	// Crear muros en los bordes y dejar espacio para una salida
+	for (let x = 0; x < width; x++) {
+		map[0][x] = 10; // Borde superior
+		// map[height - 1][x] = 10; // Borde inferior
+		map[height - 1][x] = 10; // Borde inferior
+	}
+	for (let y = 0; y < height; y++) {
+		map[y][0] = 10; // Borde izquierdo
+		map[y][width - 1] = 10; // Borde derecho
+	}
+
 	// hardcoded: limpiar camino hacia el final
+	map[start.y][start.x] = 0;
+
 	map[start.y - 1][start.x] = 0;
+	map[start.y - 2][start.x] = 0;
+
 	map[end.y][end.x - 1] = 0;
+	map[end.y][end.x - 2] = 0;
+
 	map[end.y - 1][end.x - 1] = 0;
 	map[end.y - 2][end.x - 1] = 0;
 

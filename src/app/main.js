@@ -30,17 +30,12 @@ export function genNewMap() {
 	return lvl_0;
 }
 
-var life = 3;
-var currentLvl = 0;
 var inProgress = true;
 
 export function startGame() {
 	// Menus.showCanvas();
-	life = 3;
-	// setup(levels[currentLvl]);
 	const lvl_0 = genNewMap();
 	setup(lvl_0);
-	// Menus.removeEndScreen();
 }
 
 startGame();
@@ -66,5 +61,3 @@ document.addEventListener(
 	},
 	false
 );
-
-export { life };
