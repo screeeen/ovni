@@ -2,6 +2,8 @@ import { setup, frame, win, onkey } from './game';
 import { levels } from './maps/levels';
 import { generateMap } from './maps/generateMap';
 import { MAP } from './constants';
+import { creationSound } from './sounds';
+import { zzfx } from 'ZzFX';
 
 if (!window.requestAnimationFrame) {
 	window.requestAnimationFrame =
@@ -30,22 +32,24 @@ export function genNewMap() {
 	return lvl_0;
 }
 
-var inProgress = true;
+var inProgress = false;
 
 export function startGame() {
+	inProgress = true;
 	// Menus.showCanvas();
+	zzfx(...creationSound);
+	console.log('start game');
 	const lvl_0 = genNewMap();
 	setup(lvl_0);
 }
 
-startGame();
 frame();
 
 document.addEventListener(
 	'keydown',
 	(ev) => {
 		if (ev.keyCode === 32 && !inProgress) {
-			playActive();
+			startGame();
 			return;
 		}
 		return onkey(ev, ev.keyCode, true);

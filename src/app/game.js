@@ -49,7 +49,7 @@ function onkey(ev, key, down) {
 }
 
 function update(dt) {
-	updatePlayer(dt);
+	updatePlayer4ways(dt);
 }
 
 function changePlayerDirection() {
@@ -57,116 +57,124 @@ function changePlayerDirection() {
 	player.orientation = DIRECTIONS[orientation];
 }
 
-function updatePlayer(dt) {
-	updatePlayer4ways();
-}
-
 function updatePlayer4ways() {
-	var accel = player.accel;
+	const accel = player.accel;
 
+	// Inicializa aceleraciones y posiciones
 	checkPlayerPositions(player);
-
 	player.ddx = 0;
 	player.ddy = 0;
 
-	if (player.orientation === 3) {
-		player.ddy = 0;
-		player.dy = 0;
-		player.ddx = player.ddx - accel;
+	// Ajusta aceleraciones y velocidades según la orientación del jugador
+	switch (player.orientation) {
+		case 0: // Arriba
+			player.ddy -= accel;
+			player.ddx = 0;
+			player.dx = 0;
+			break;
+		case 1: // Derecha
+			player.ddx += accel;
+			player.ddy = 0;
+			player.dy = 0;
+			break;
+		case 2: // Abajo
+			player.ddy += accel;
+			player.ddx = 0;
+			player.dx = 0;
+			break;
+		case 3: // Izquierda
+			player.ddx -= accel;
+			player.ddy = 0;
+			player.dy = 0;
+			break;
 	}
 
-	if (player.orientation === 1) {
-		player.ddy = 0;
-		player.dy = 0;
-		player.ddx = player.ddx + accel;
-	}
-
-	if (player.orientation === 0) {
-		player.ddx = 0;
-		player.dx = 0;
-		player.ddy = player.ddy - accel;
-	}
-
-	if (player.orientation === 2) {
-		player.ddx = 0;
-		player.dx = 0;
-		player.ddy = player.ddy + accel;
-	}
-
-	player.x = player.x + dt * player.dx;
-	player.y = player.y + dt * player.dy;
+	// Actualiza posición y velocidad limitando a los máximos
+	player.x += dt * player.dx;
+	player.y += dt * player.dy;
 	player.dx = bound(player.dx + dt * player.ddx, -player.maxdx, player.maxdx);
 	player.dy = bound(player.dy + dt * player.ddy, -player.maxdy, player.maxdy);
 
-	var tx = p2t(player.x),
+	// Calcula las posiciones en la cuadrícula
+	const tx = p2t(player.x),
 		ty = p2t(player.y),
 		nx = player.x % TILE,
-		ny = player.y % TILE,
-		cell = tcell(tx, ty),
-		cellright = tcell(tx + 1, ty),
-		celldown = tcell(tx, ty + 1),
-		celldiag = tcell(tx + 1, ty + 1);
+		ny = player.y % TILE;
 
+	// Celdas actuales y vecinas
+	const cell = tcell(tx, ty),
+		cellRight = tcell(tx + 1, ty),
+		cellDown = tcell(tx, ty + 1),
+		cellDiag = tcell(tx + 1, ty + 1);
+
+	// Verificación de colisiones verticales (arriba/abajo)
 	if (player.dy > 0) {
-		if ((celldown && !cell) || (celldiag && !cellright && nx)) {
+		// Moviendo hacia abajo
+		if ((cellDown && !cell) || (cellDiag && !cellRight && nx)) {
 			player.y = t2p(ty);
 			player.dy = 0;
-			player.orientation = 0;
-			ny = 0;
+			player.orientation = 0; // Cambio de orientación
 		}
 	} else if (player.dy < 0) {
-		if ((cell && !celldown) || (cellright && !celldiag && nx)) {
+		// Moviendo hacia arriba
+		if ((cell && !cellDown) || (cellRight && !cellDiag && nx)) {
 			player.y = t2p(ty + 1);
-			player.orientation = 2;
-			cell = celldown;
-			cellright = celldiag;
-			ny = 0;
+			player.orientation = 2; // Cambio de orientación
 		}
 	}
 
+	// Verificación de colisiones horizontales (derecha/izquierda)
 	if (player.dx > 0) {
-		if ((cellright && !cell) || (celldiag && !celldown && ny)) {
+		// Moviendo hacia la derecha
+		if ((cellRight && !cell) || (cellDiag && !cellDown && ny)) {
 			player.x = t2p(tx);
-			player.orientation = 3;
+			player.orientation = 3; // Cambio de orientación
 		}
 	} else if (player.dx < 0) {
-		if ((cell && !cellright) || (celldown && !celldiag && ny)) {
+		// Moviendo hacia la izquierda
+		if ((cell && !cellRight) || (cellDown && !cellDiag && ny)) {
 			player.x = t2p(tx + 1);
-			player.orientation = 1;
+			player.orientation = 1; // Cambio de orientación
 		}
 	}
 }
 
 function checkPlayerPositions(entity) {
-	if (Math.round(entity.x) >= TILE * (MAP.tw - 1)) {
+	const roundedX = Math.round(entity.x);
+	const roundedY = Math.round(entity.y);
+	const maxTileX = TILE * (MAP.tw - 1);
+	const maxTileY = TILE * (MAP.th - 1);
+
+	// Verifica si está en el borde derecho del mapa
+	if (roundedX >= maxTileX) {
 		if (cellAvailable(0, entity.y) === 0 && cellAvailable(1, entity.y) === 0) {
 			entity.x = 0.5;
 		} else {
-			entity.x = TILE * (MAP.tw - 1) - 0.5;
+			entity.x = maxTileX - 0.5;
 		}
-	} else if (Math.round(entity.x) <= 0) {
-		if (
-			cellAvailable(TILE * (MAP.tw - 1), entity.y) === 0 &&
-			cellAvailable(TILE * (MAP.tw - 1) - 1, entity.y) === 0
-		) {
-			entity.x = TILE * (MAP.tw - 1) - 0.5;
+	}
+	// Verifica si está en el borde izquierdo del mapa
+	else if (roundedX <= 0) {
+		if (cellAvailable(maxTileX, entity.y) === 0 && cellAvailable(maxTileX - 1, entity.y) === 0) {
+			entity.x = maxTileX - 0.5;
 		} else {
 			entity.x = 0.5;
 		}
-	} else if (Math.round(entity.y) >= TILE * (MAP.th - 1)) {
-		startGame();
+	}
+	// Verifica si está en el borde inferior del mapa
+	else if (roundedY >= maxTileY) {
+		startGame(); // Reinicia el juego si llega al borde inferior
 		if (cellAvailable(entity.x, 0) === 0 && cellAvailable(entity.x, 1) === 0) {
 			entity.y = 0.5;
 		} else {
-			entity.y = TILE * (MAP.th - 1) - 0.5;
+			entity.y = maxTileY - 0.5;
 		}
-	} else if (Math.round(entity.y) <= 0) {
-		player.orientation = 2;
-		if (
-			cellAvailable(entity.x, TILE * (MAP.th - 1)) === 0 &&
-			cellAvailable(entity.x, TILE * (MAP.th - 1) - 1) === 0
-		) {
-			entity.y = TILE * (MAP.th - 1) - 0.5;
+	}
+	// Verifica si está en el borde superior del mapa
+	else if (roundedY <= 0) {
+		player.orientation = 2; // Cambia la orientación del jugador
+		if (cellAvailable(entity.x, maxTileY) === 0 && cellAvailable(entity.x, maxTileY - 1) === 0) {
+			entity.y = maxTileY - 0.5;
 		} else {
 			entity.y = 0.5;
 		}
