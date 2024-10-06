@@ -32,12 +32,14 @@ export function genNewMap() {
 	return lvl_0;
 }
 
-var inProgress = false;
+export let inProgress = false;
+
+console.log('inProgress', inProgress);
 
 export function startGame() {
 	inProgress = true;
 	// Menus.showCanvas();
-	zzfx(...creationSound);
+	// zzfx(...creationSound);
 	console.log('start game');
 	const lvl_0 = genNewMap();
 	setup(lvl_0);

@@ -1,34 +1,35 @@
 export function generateMap(width, height, start, end) {
 	// Función para generar un valor aleatorio entre 1 y 10
 	function getRandomValue() {
-		const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
-		// const num = 10;
+		// const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
+		const num = 10;
 		return num;
 	}
 
 	// Inicializar el mapa con valores aleatorios entre 1 y 10
 	const map = Array.from({ length: height }, () => Array.from({ length: width }, getRandomValue));
+	// const map = Array.from({ length: height }, () => Array.from({ length: width }, () => 0));
 
 	// Agrupar obstáculos en bloques de 5x5
 	console.log('height', height);
 	console.log('width', width);
 
-	function placeObstacles() {
-		for (let y = 0; y < height; y += 4) {
-			// Saltar 5 filas cada vez
-			for (let x = 0; x < width; x += 4) {
-				// Saltar 5 columnas cada vez
-				// Crear un grupo de 5x5 obstáculos
-				for (let dy = 0; dy < 4; dy++) {
-					for (let dx = 0; dx < 4; dx++) {
-						if (x + dx < width && y + dy < height) {
-							map[y + dy][x + dx] = 10; // Establecer como obstáculo
-						}
-					}
-				}
-			}
-		}
-	}
+	// function placeObstacles() {
+	// 	for (let y = 0; y < height; y += 4) {
+	// 		// Saltar 5 filas cada vez
+	// 		for (let x = 0; x < width; x += 4) {
+	// 			// Saltar 5 columnas cada vez
+	// 			// Crear un grupo de 5x5 obstáculos
+	// 			for (let dy = 0; dy < 4; dy++) {
+	// 				for (let dx = 0; dx < 4; dx++) {
+	// 					if (x + dx < width && y + dy < height) {
+	// 						map[y + dy][x + dx] = 10; // Establecer como obstáculo
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	// Llamar a la función para agrupar obstáculos
 	// placeObstacles();

@@ -1,5 +1,5 @@
 let MAP = {
-		tw: 60,
+		tw: 10,
 		th: 10,
 		// tw: Math.floor(Math.random() * (32 - 8) + 8),
 		// th: Math.floor(Math.random() * (16 - 10) + 10),
@@ -37,7 +37,12 @@ assets.onload = function () {
 
 const DIRECTIONS = [0, 1, 2, 3];
 
+const maxTileX = TILE * (MAP.tw - 1);
+const maxTileY = TILE * (MAP.th - 1);
+
 export {
+	maxTileX,
+	maxTileY,
 	DIRECTIONS,
 	MAP,
 	TILE,
