@@ -1,18 +1,14 @@
 export function generateMap(width, height, start, end) {
 	// Función para generar un valor aleatorio entre 1 y 10
 	function getRandomValue() {
-		// const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
-		const num = 10;
+		const num = Math.floor(Math.random() * (10 - 2 + 1)) + 2;
+		// const num = 10;
 		return num;
 	}
 
 	// Inicializar el mapa con valores aleatorios entre 1 y 10
 	const map = Array.from({ length: height }, () => Array.from({ length: width }, getRandomValue));
 	// const map = Array.from({ length: height }, () => Array.from({ length: width }, () => 0));
-
-	// Agrupar obstáculos en bloques de 5x5
-	console.log('height', height);
-	console.log('width', width);
 
 	// function placeObstacles() {
 	// 	for (let y = 0; y < height; y += 4) {
@@ -106,6 +102,7 @@ export function generateMap(width, height, start, end) {
 
 	// hardcoded: limpiar camino hacia el final
 	map[start.y][start.x] = 0;
+	map[start.y - 1][start.x + 1] = 0;
 
 	map[start.y - 1][start.x] = 0;
 	map[start.y - 2][start.x] = 0;
@@ -147,6 +144,7 @@ export function generateMap(width, height, start, end) {
 						rotation: 0,
 						type: 'player',
 						id: 1,
+						orientation: 2,
 					},
 					{
 						name: 'end',

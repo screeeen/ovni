@@ -1,22 +1,13 @@
 let MAP = {
-		tw: 10,
-		th: 10,
-		// tw: Math.floor(Math.random() * (32 - 8) + 8),
-		// th: Math.floor(Math.random() * (16 - 10) + 10),
+		// tw: 10,
+		// th: 10,
+		tw: Math.floor(Math.random() * (32 - 8) + 8),
+		th: Math.floor(Math.random() * (16 - 10) + 10),
 	},
 	TILE = 16,
-	GRAVITY = 9.8 * 60,
-	MAXDX = 7,
-	MAXDY = 30,
-	ACCEL = 1 / 10,
-	FRICTION = 1 / 10,
-	IMPULSE = 1250,
 	KEY = {
 		SPACE: 32,
-		LEFT: 37,
-		RIGHT: 39,
-		UP: 38,
-		DOWN: 40,
+		DOWN: 40, //debug only
 	},
 	fps = 60,
 	step = 1 / fps,
@@ -37,29 +28,4 @@ assets.onload = function () {
 
 const DIRECTIONS = [0, 1, 2, 3];
 
-const maxTileX = TILE * (MAP.tw - 1);
-const maxTileY = TILE * (MAP.th - 1);
-
-export {
-	maxTileX,
-	maxTileY,
-	DIRECTIONS,
-	MAP,
-	TILE,
-	GRAVITY,
-	MAXDX,
-	MAXDY,
-	ACCEL,
-	FRICTION,
-	IMPULSE,
-	DIAMOND_COLORS,
-	KEY,
-	fps,
-	step,
-	canvas,
-	ctx,
-	width,
-	height,
-	assets,
-	font,
-};
+export { DIRECTIONS, MAP, TILE, KEY, fps, step, canvas, ctx, width, height, assets, font };

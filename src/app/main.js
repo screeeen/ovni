@@ -54,7 +54,7 @@ document.addEventListener(
 			startGame();
 			return;
 		}
-		return onkey(ev, ev.keyCode, true);
+		return inProgress && onkey(ev, ev.keyCode, false);
 	},
 	false
 );
@@ -63,7 +63,7 @@ document.addEventListener(
 	'keyup',
 	(ev) => {
 		if (ev.keyCode === 32 && !inProgress) return;
-		return onkey(ev, ev.keyCode, false);
+		// return onkey(ev, ev.keyCode, false);
 	},
 	false
 );
