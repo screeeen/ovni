@@ -17,8 +17,6 @@ if (!window.requestAnimationFrame) {
 }
 
 export function genNewMap() {
-	// MAP.tw = Math.floor(Math.random() * (32 - 8) + 8);
-	// MAP.th = Math.floor(Math.random() * (16 - 10) + 10);
 	const width = MAP.tw;
 	const height = MAP.th;
 	const start = { x: 2, y: 2 };

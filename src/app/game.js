@@ -1,17 +1,5 @@
 import { timestamp, overlap } from './helpers';
-import {
-	DIRECTIONS,
-	MAP,
-	TILE,
-	KEY,
-	step,
-	canvas,
-	ctx,
-	width,
-	height,
-	assets,
-	maxTileY,
-} from './constants';
+import { DIRECTIONS, MAP, TILE, KEY, step, canvas, ctx, width, height, assets } from './constants';
 import { startGame, inProgress } from './main';
 
 var player = {},
