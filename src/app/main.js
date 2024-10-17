@@ -4,6 +4,7 @@ import { generateMap } from './maps/generateMap';
 import { MAP } from './constants';
 import { creationSound } from './sounds';
 import { zzfx } from 'ZzFX';
+import { Menus } from './menus';
 
 if (!window.requestAnimationFrame) {
 	window.requestAnimationFrame =
@@ -14,6 +15,10 @@ if (!window.requestAnimationFrame) {
 		function (callback, element) {
 			window.setTimeout(callback, 1000 / 60);
 		};
+}
+
+function init() {
+	Menus.startScreen();
 }
 
 export function genNewMap() {
@@ -35,14 +40,16 @@ export let inProgress = false;
 console.log('inProgress', inProgress);
 
 export function startGame() {
+	Menus.removeText('playButton');
+	Menus.removeText('titleText');
 	inProgress = true;
-	// Menus.showCanvas();
 	// zzfx(...creationSound);
 	console.log('start game');
 	const lvl_0 = genNewMap();
 	setup(lvl_0);
 }
 
+init();
 frame();
 
 document.addEventListener(
