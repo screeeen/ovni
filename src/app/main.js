@@ -37,14 +37,11 @@ export function genNewMap() {
 
 export let inProgress = false;
 
-console.log('inProgress', inProgress);
-
 export function startGame() {
 	Menus.removeText('playButton');
 	Menus.removeText('titleText');
 	inProgress = true;
 	// zzfx(...creationSound);
-	console.log('start game');
 	const lvl_0 = genNewMap();
 	setup(lvl_0);
 }

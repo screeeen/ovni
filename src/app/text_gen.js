@@ -64,57 +64,6 @@ var TextGen = {
 			div.appendChild(span);
 		}, this);
 	},
-	madeByText: (arr) => {
-		var mainBlock = document.getElementById('renders');
-		var div = document.createElement('div');
-
-		div.setAttribute(
-			'style',
-			'position: absolute; bottom: 30px; right: 0; left: 0; margin: auto; width: 130px; height: 28px;'
-		);
-		div.id = 'madeByText';
-
-		mainBlock.appendChild(div);
-
-		arr.forEach((el) => {
-			var span = TextGen.createSpan(el, 3, 10);
-			div.appendChild(span);
-		}, this);
-	},
-	introText: (arr, position, width, id) => {
-		var mainBlock = document.getElementById('renders');
-		var div = document.createElement('div');
-		var pos;
-
-		switch (position) {
-			case 'top':
-				pos = 'top: 150px;';
-				break;
-			case 'bottom':
-				pos = 'bottom: 150px;';
-				break;
-			case 'middle':
-				pos = 'top: 0; bottom: 0;';
-				break;
-		}
-
-		div.setAttribute(
-			'style',
-			'position: absolute; ' +
-				pos +
-				' right: 0; left: 0; margin: auto; width: ' +
-				width +
-				'px; height: 28px;'
-		);
-		div.id = id;
-
-		mainBlock.appendChild(div);
-
-		arr.forEach((el) => {
-			var span = TextGen.createSpan(el, 3, 10);
-			div.appendChild(span);
-		}, this);
-	},
 	button: (arr, id, position = {}) => {
 		var mainBlock = document.getElementById('renders');
 		var div = document.createElement('div');
@@ -148,23 +97,6 @@ var TextGen = {
 
 		arr.forEach((el) => {
 			var span = TextGen.createSpan(el, sizes.scale, sizes.margin);
-			div.appendChild(span);
-		}, this);
-	},
-	endGameTitle: (arr) => {
-		var mainBlock = document.getElementById('renders');
-		var div = document.createElement('div');
-
-		div.setAttribute(
-			'style',
-			'position: absolute; top: 100px; right: 0; left: 0; margin: auto; width: 450px; height: 28px;'
-		);
-		div.id = 'endGameTitle';
-
-		mainBlock.appendChild(div);
-
-		arr.forEach((el) => {
-			var span = TextGen.createSpan(el, 6, 25);
 			div.appendChild(span);
 		}, this);
 	},

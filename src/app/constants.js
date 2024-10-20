@@ -1,8 +1,8 @@
 let MAP = {
-		// tw: 10,
-		// th: 10,
-		tw: Math.floor(Math.random() * (32 - 8) + 8),
-		th: Math.floor(Math.random() * (16 - 10) + 10),
+		tw: 32,
+		th: 32,
+		// tw: Math.floor(Math.random() * (32 - 8) + 8),
+		// th: Math.floor(Math.random() * (16 - 10) + 10),
 	},
 	TILE = 16,
 	KEY = {

@@ -1,4 +1,4 @@
-import { timestamp, overlap } from './helpers';
+import { timestamp } from './helpers';
 import { DIRECTIONS, MAP, TILE, KEY, step, canvas, ctx, width, height, assets } from './constants';
 import { startGame, inProgress } from './main';
 
@@ -34,6 +34,7 @@ function onkey(ev, key, down) {
 
 function update() {
 	if (inProgress) movePlayer(player.orientation);
+	renderCamera();
 }
 
 function changePlayerDirection() {
@@ -107,17 +108,40 @@ function checkPlayerPositions(entity) {
 	}
 }
 
-function render(ctx, frame, dt) {
-	// console.log(frame);
+function renderCamera() {
+	const viewW = 18;
+	const viewH = 10;
+	let cameraX = Math.floor(player.x / TILE) - viewW / 2; // + TILE / 2; // - width / 2;
+	let cameraY = Math.floor(player.y / TILE) - viewH / 2; // + TILE / 2; // - height / 2;
+
+	// if (cameraX < 0) cameraX = 0;
+	// if (cameraY < 0) cameraY = 0;
+	// if (cameraX + width > MAP.tw) cameraX = MAP.tw - width;
+	// if (cameraY + height > MAP.th) cameraY = MAP.th - height;
+	// console.log(width, height);
+	// console.log('player-', player.x, player.y);
+
+	console.log('cam', cameraX, cameraY);
+
+	// Limpiar el canvas
 	ctx.clearRect(0, 0, width, height);
-	renderMap(ctx);
-	renderPlayer(ctx, dt);
+
+	// Guardar el estado actual de la transformación
+	// ctx.save();
+
+	// Mover la cámara (desplazar el mundo en sentido contrario)
+	// ctx.translate(-cameraX, -cameraY);
+
+	renderMap({ ctx, cameraX, cameraY, viewW, viewH });
+	renderPlayer(ctx);
+
+	// Restaurar la transformación
+	// ctx.restore();
 }
 
-function renderMap(ctx) {
-	// console.log('renderMap');
-	for (var y = 0; y < MAP.th; y++) {
-		for (var x = 0; x < MAP.tw; x++) {
+function renderMap({ ctx, cameraX, cameraY, viewH, viewW }) {
+	for (var y = cameraY; y < cameraY + viewH; y++) {
+		for (var x = cameraX; x < cameraX + viewW; x++) {
 			var cell = tcell(x, y, false);
 			if (cell === 0) {
 				ctx.drawImage(assets, 0, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
@@ -128,7 +152,7 @@ function renderMap(ctx) {
 	}
 }
 
-function renderPlayer(ctx, dt) {
+function renderPlayer(ctx) {
 	var or = player.orientation === 'right' ? 12 : 11;
 	ctx.drawImage(assets, or * TILE, 0, TILE, TILE, player.x, player.y, TILE, TILE);
 }
@@ -187,7 +211,7 @@ function frame() {
 		dt = dt - step;
 		update();
 	}
-	if (!win && !gameOver) render(ctx, counter, dt);
+	// if (!win && !gameOver) render(ctx, counter, dt);
 
 	last = now;
 	counter++;
