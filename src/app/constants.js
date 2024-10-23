@@ -1,6 +1,6 @@
 let MAP = {
-		tw: 32,
-		th: 32,
+		tw: 128,
+		th: 128,
 		// tw: Math.floor(Math.random() * (32 - 8) + 8),
 		// th: Math.floor(Math.random() * (16 - 10) + 10),
 	},

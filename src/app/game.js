@@ -3,6 +3,7 @@ import { DIRECTIONS, MAP, TILE, KEY, step, canvas, ctx, width, height, assets } 
 import { startGame, inProgress } from './main';
 
 var player = {},
+	camera = {},
 	cells = [],
 	win = false,
 	gameOver = false;
@@ -34,12 +35,40 @@ function onkey(ev, key, down) {
 
 function update() {
 	if (inProgress) movePlayer(player.orientation);
-	renderCamera();
+	renderCamera(camera);
 }
 
 function changePlayerDirection() {
+	// TODO: randomize more
 	const orientation = (player.orientation + 1) % 4;
 	player.orientation = DIRECTIONS[orientation];
+}
+
+// check out of the map
+function checkPlayerPositions(entity) {
+	const roundedY = Math.round(entity.y);
+	const roundedX = Math.round(entity.x);
+
+	if (roundedY >= TILE * (MAP.th - 1)) {
+		startGame();
+	} else if (roundedY <= 0) {
+		player.orientation = 2;
+		entity.y = 0.5;
+	}
+	const bottomCamY = (camera.y + camera.h) * TILE - TILE;
+	const topBoundY = camera.y * TILE - TILE;
+	const rightBoundX = (camera.x + camera.w) * TILE - TILE;
+	const leftBoundX = camera.x * TILE - TILE;
+
+	if (roundedY >= bottomCamY) {
+		camera.y = camera.y + camera.h;
+	} else if (roundedY <= topBoundY) {
+		camera.y = camera.y - camera.h;
+	} else if (roundedX >= rightBoundX) {
+		camera.x = camera.x + camera.w;
+	} else if (roundedX <= leftBoundX) {
+		camera.x = camera.x - camera.w;
+	}
 }
 
 const checkCollisionLeft = (newX, player) => {
@@ -97,31 +126,13 @@ const movePlayer = (direction) => {
 	}
 };
 
-// check out of the map
-function checkPlayerPositions(entity) {
-	const roundedY = Math.round(entity.y);
-	if (roundedY >= TILE * (MAP.th - 1)) {
-		startGame();
-	} else if (roundedY <= 0) {
-		player.orientation = 2;
-		entity.y = 0.5;
-	}
-}
-
-function renderCamera() {
-	const viewW = 18;
-	const viewH = 10;
-	let cameraX = Math.floor(player.x / TILE) - viewW / 2; // + TILE / 2; // - width / 2;
-	let cameraY = Math.floor(player.y / TILE) - viewH / 2; // + TILE / 2; // - height / 2;
-
+function renderCamera(camera) {
 	// if (cameraX < 0) cameraX = 0;
 	// if (cameraY < 0) cameraY = 0;
 	// if (cameraX + width > MAP.tw) cameraX = MAP.tw - width;
 	// if (cameraY + height > MAP.th) cameraY = MAP.th - height;
 	// console.log(width, height);
 	// console.log('player-', player.x, player.y);
-
-	console.log('cam', cameraX, cameraY);
 
 	// Limpiar el canvas
 	ctx.clearRect(0, 0, width, height);
@@ -132,14 +143,19 @@ function renderCamera() {
 	// Mover la cámara (desplazar el mundo en sentido contrario)
 	// ctx.translate(-cameraX, -cameraY);
 
-	renderMap({ ctx, cameraX, cameraY, viewW, viewH });
+	renderMap({ ctx, camera });
 	renderPlayer(ctx);
 
 	// Restaurar la transformación
 	// ctx.restore();
 }
 
-function renderMap({ ctx, cameraX, cameraY, viewH, viewW }) {
+function renderMap({ ctx, camera }) {
+	const cameraX = camera.x;
+	const cameraY = camera.y;
+	const viewW = camera.w;
+	const viewH = camera.h;
+
 	for (var y = cameraY; y < cameraY + viewH; y++) {
 		for (var x = cameraX; x < cameraX + viewW; x++) {
 			var cell = tcell(x, y, false);
@@ -177,6 +193,8 @@ function setup(map) {
 		}
 	}
 
+	setupCamera(player);
+
 	cells = data;
 }
 
@@ -188,6 +206,7 @@ function setupEntity(obj) {
 		y: obj.y,
 
 		player: obj.type == 'player',
+		camera: obj.type == 'camera',
 		type: obj.properties.type,
 		orientation: obj.orientation,
 		start: {
@@ -197,6 +216,16 @@ function setupEntity(obj) {
 	};
 
 	return entity;
+}
+
+function setupCamera(player) {
+	var _camera = {};
+	_camera.x = 0;
+	_camera.y = 0;
+	_camera.w = 18;
+	_camera.h = 10;
+
+	camera = _camera;
 }
 
 var counter = 0,

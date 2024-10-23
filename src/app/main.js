@@ -22,15 +22,12 @@ function init() {
 }
 
 export function genNewMap() {
-	const width = MAP.tw;
-	const height = MAP.th;
 	const start = { x: 2, y: 2 };
 	const end = { x: MAP.tw - 1, y: MAP.th - 1 };
 
-	const lvl_0 = generateMap(width, height, start, end);
+	const lvl_0 = generateMap(MAP.tw, MAP.th, start, end);
 
 	console.table('* *', lvl_0.layers[0].data);
-	console.table('* *', width, ' ', height);
 	console.table('* *', MAP.tw, ' ', MAP.th);
 	return lvl_0;
 }

@@ -31,9 +31,8 @@ var Menus = {
 	},
 	removeText: (id) => {
 		var el = document.getElementById(id);
-		console.log(el);
+
 		if (el) {
-			console.log(el);
 			el.remove();
 		}
 	},
