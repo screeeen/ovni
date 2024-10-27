@@ -109,40 +109,39 @@ function checkPlayerPositions(entity) {
 }
 
 function renderCamera() {
-	const viewW = 18;
-	const viewH = 10;
+	const viewW = 8;
+	const viewH = 8;
 	let cameraX = Math.floor(player.x / TILE) - viewW / 2; // + TILE / 2; // - width / 2;
 	let cameraY = Math.floor(player.y / TILE) - viewH / 2; // + TILE / 2; // - height / 2;
 
-	// if (cameraX < 0) cameraX = 0;
-	// if (cameraY < 0) cameraY = 0;
-	// if (cameraX + width > MAP.tw) cameraX = MAP.tw - width;
-	// if (cameraY + height > MAP.th) cameraY = MAP.th - height;
-	// console.log(width, height);
-	// console.log('player-', player.x, player.y);
-
-	console.log('cam', cameraX, cameraY);
-
-	// Limpiar el canvas
 	ctx.clearRect(0, 0, width, height);
-
-	// Guardar el estado actual de la transformación
-	// ctx.save();
-
-	// Mover la cámara (desplazar el mundo en sentido contrario)
-	// ctx.translate(-cameraX, -cameraY);
 
 	renderMap({ ctx, cameraX, cameraY, viewW, viewH });
 	renderPlayer(ctx);
-
-	// Restaurar la transformación
-	// ctx.restore();
 }
 
-function renderMap({ ctx, cameraX, cameraY, viewH, viewW }) {
+function renderMap({ ctx, cameraX, cameraY, viewW, viewH }) {
+	// ctx.globalCompositeOperation = 'destination-out'; // Hace que el área del gradiente sea transparente
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+	ctx.beginPath();
+	ctx.arc(30, 30, 100, 0, Math.PI * 2); // Radio del círculo de luz
+	ctx.fill();
+
 	for (var y = cameraY; y < cameraY + viewH; y++) {
 		for (var x = cameraX; x < cameraX + viewW; x++) {
 			var cell = tcell(x, y, false);
+
+			// var gradient = ctx.createRadialGradient(
+			// 		cameraX + 8,
+			// 		cameraY + 8,
+			// 		50,
+			// 		cameraX + 8,
+			// 		cameraY + 8,
+			// 		200
+			// 	);
+			// 	gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+			// 	gradient.addColorStop(1, 'rgba(0, 0, 0, 0.9)');
+
 			if (cell === 0) {
 				ctx.drawImage(assets, 0, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
 			} else if (cell) {
