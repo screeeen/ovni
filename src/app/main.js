@@ -50,6 +50,17 @@ init();
 frame();
 
 document.addEventListener(
+	'click',
+	(ev) => {
+		if (!inProgress) {
+			startGame();
+			return;
+		}
+	},
+	false
+);
+
+document.addEventListener(
 	'keydown',
 	(ev) => {
 		if (ev.keyCode === 32 && !inProgress) {
