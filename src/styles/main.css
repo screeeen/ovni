@@ -23,15 +23,17 @@ body {
 	margin: auto;
 	border: 1px solid yellow;
 }
-/* 
-#menus {
-	background-color: yellow;
-	height: 10px;
-	width: 100%;
+
+@keyframes parpadeo {
+	0%,
+	100% {
+		opacity: 1; /* Visible al inicio y al final */
+	}
+	50% {
+		opacity: 0; /* Invisible en el medio */
+	}
 }
 
-#renders {
-	background-color: red;
-	height: 10px;
-	width: 100%;
-} */
+#titleText {
+	animation: parpadeo 1s infinite;
+}

@@ -5,7 +5,7 @@ var Menus = {
 		var play = TextGen.generateWord('press space to play');
 		TextGen.button(play, 'playButton');
 
-		var title = TextGen.generateWord('ovni perdido');
+		var title = TextGen.generateWord('ovni raya perd ido.');
 		TextGen.titleText(title);
 	},
 	showIntroScreen: () => {

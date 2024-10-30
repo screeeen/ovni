@@ -60,7 +60,7 @@ var TextGen = {
 		mainBlock.appendChild(div);
 
 		arr.forEach((el) => {
-			var span = TextGen.createSpan(el, 10, 40);
+			var span = TextGen.createSpan(el, 2, 40);
 			div.appendChild(span);
 		}, this);
 	},

@@ -122,10 +122,10 @@ function renderCamera() {
 
 function renderMap({ ctx, cameraX, cameraY, viewW, viewH }) {
 	// ctx.globalCompositeOperation = 'destination-out'; // Hace que el área del gradiente sea transparente
-	ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-	ctx.beginPath();
-	ctx.arc(30, 30, 100, 0, Math.PI * 2); // Radio del círculo de luz
-	ctx.fill();
+	// ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+	// ctx.beginPath();
+	// ctx.arc(30, 30, 100, 0, Math.PI * 2); // Radio del círculo de luz
+	// ctx.fill();
 
 	for (var y = cameraY; y < cameraY + viewH; y++) {
 		for (var x = cameraX; x < cameraX + viewW; x++) {
