@@ -56,6 +56,7 @@ document.addEventListener(
 			startGame();
 			return;
 		}
+		return inProgress && onkey(ev, 32, false);
 	},
 	false
 );
