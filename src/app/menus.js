@@ -1,11 +1,31 @@
 import { TextGen } from './text_gen';
 
+const generateRandomString = (length) => {
+	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let result = '';
+	const usedChars = new Set();
+
+	while (result.length < length) {
+		const randomChar = chars.charAt(Math.floor(Math.random() * chars.length));
+		if (!usedChars.has(randomChar)) {
+			usedChars.add(randomChar);
+			result += randomChar;
+		}
+	}
+	return result;
+};
+
 var Menus = {
+	mosaic: () => {},
 	startScreen: () => {
 		var play = TextGen.generateWord('press space to play');
 		TextGen.button(play, 'playButton');
 
-		var title = TextGen.generateWord('ovni raya perd ido.');
+		// var wor = generateRandomString(100);
+		// var mosaic = TextGen.generateWord(wor);
+		// TextGen.titleText(mosaic);
+
+		var title = TextGen.generateWord('ovni raya perdido.');
 		TextGen.titleText(title);
 	},
 	showIntroScreen: () => {

@@ -5,48 +5,24 @@ export function generateMap(width, height, start, end) {
 		return num;
 	}
 
-	// Inicializar el mapa con valores aleatorios entre 1 y 10
 	const map = Array.from({ length: height }, () => Array.from({ length: width }, getRandomValue));
-	// const map = Array.from({ length: height }, () => Array.from({ length: width }, () => 0));
 
-	// function placeObstacles() {
-	// 	for (let y = 0; y < height; y += 4) {
-	// 		// Saltar 5 filas cada vez
-	// 		for (let x = 0; x < width; x += 4) {
-	// 			// Saltar 5 columnas cada vez
-	// 			// Crear un grupo de 5x5 obstáculos
-	// 			for (let dy = 0; dy < 4; dy++) {
-	// 				for (let dx = 0; dx < 4; dx++) {
-	// 					if (x + dx < width && y + dy < height) {
-	// 						map[y + dy][x + dx] = 10; // Establecer como obstáculo
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	// Llamar a la función para agrupar obstáculos
-	// placeObstacles();
-
-	// Función para verificar si una posición es válida
 	function isValid(x, y) {
 		return x > 0 && y > 0 && x < width - 1 && y < height - 1 && map[y][x] >= 1 && map[y][x] <= 10;
 	}
 
-	// Función recursiva para crear un camino usando DFS con caminos más amplios
 	function createPath(x, y) {
 		const pathSize = 2;
-		// Marcar un área de 2x2 como parte del camino (valor 0)
+
 		for (let dx = 0; dx < pathSize; dx++) {
 			for (let dy = 0; dy < pathSize; dy++) {
 				if (x + dx < width && y + dy < height) {
+					// map[y + dy][x + dx] = Math.random() < 0.5 ? 0 : 11;
 					map[y + dy][x + dx] = 0;
 				}
 			}
 		}
 
-		// Direcciones de movimiento: arriba, abajo, izquierda, derecha
 		const directions = [
 			[0, -2],
 			[0, 2],
@@ -79,7 +55,6 @@ export function generateMap(width, height, start, end) {
 					}
 				}
 
-				// Continuar si está rodeado de paredes por al menos 3 lados
 				if (walls >= 2 || (newX === end.x && newY === end.y)) {
 					createPath(newX, newY);
 				}

@@ -19,6 +19,7 @@ if (!window.requestAnimationFrame) {
 
 function init() {
 	Menus.startScreen();
+	console.log('hola');
 }
 
 export function genNewMap() {

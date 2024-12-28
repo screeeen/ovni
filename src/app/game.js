@@ -70,7 +70,7 @@ const movePlayer = (direction) => {
 	let newX = player.x;
 	let newY = player.y;
 
-	checkPlayerPositions(player);
+	checkOutOfMap(player);
 
 	switch (direction) {
 		case 0:
@@ -80,7 +80,6 @@ const movePlayer = (direction) => {
 			break;
 		case 2:
 			newY += 1;
-
 			if (!checkCollisionDown(newY, player)) player.y = newY;
 			else player.orientation = 0;
 			break;
@@ -98,7 +97,7 @@ const movePlayer = (direction) => {
 };
 
 // check out of the map
-function checkPlayerPositions(entity) {
+function checkOutOfMap(entity) {
 	const roundedY = Math.round(entity.y);
 	if (roundedY >= TILE * (MAP.th - 1)) {
 		startGame();
@@ -116,31 +115,29 @@ function renderCamera() {
 
 	ctx.clearRect(0, 0, width, height);
 
-	renderMap({ ctx, cameraX, cameraY, viewW, viewH });
+	// renderMapWithLantern({ ctx, cameraX, cameraY, viewW, viewH });
+	renderMap(ctx);
 	renderPlayer(ctx);
 }
 
-function renderMap({ ctx, cameraX, cameraY, viewW, viewH }) {
-	// ctx.globalCompositeOperation = 'destination-out'; // Hace que el área del gradiente sea transparente
-	// ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-	// ctx.beginPath();
-	// ctx.arc(30, 30, 100, 0, Math.PI * 2); // Radio del círculo de luz
-	// ctx.fill();
+function renderMap(ctx) {
+	// console.log('renderMap');
+	for (var y = 0; y < MAP.th; y++) {
+		for (var x = 0; x < MAP.tw; x++) {
+			var cell = tcell(x, y, false);
+			if (cell === 0) {
+				ctx.drawImage(assets, 0, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
+			} else if (cell) {
+				ctx.drawImage(assets, (cell - 1) * TILE, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
+			}
+		}
+	}
+}
 
+function renderMapWithLantern({ ctx, cameraX, cameraY, viewW, viewH }) {
 	for (var y = cameraY; y < cameraY + viewH; y++) {
 		for (var x = cameraX; x < cameraX + viewW; x++) {
 			var cell = tcell(x, y, false);
-
-			// var gradient = ctx.createRadialGradient(
-			// 		cameraX + 8,
-			// 		cameraY + 8,
-			// 		50,
-			// 		cameraX + 8,
-			// 		cameraY + 8,
-			// 		200
-			// 	);
-			// 	gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-			// 	gradient.addColorStop(1, 'rgba(0, 0, 0, 0.9)');
 
 			if (cell === 0) {
 				ctx.drawImage(assets, 0, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
