@@ -7,27 +7,8 @@ export function generateMap(width, height, start, end) {
 
 	// Inicializar el mapa con valores aleatorios entre 1 y 10
 	const map = Array.from({ length: height }, () => Array.from({ length: width }, getRandomValue));
+	const flattenedDots = [];
 	// const map = Array.from({ length: height }, () => Array.from({ length: width }, () => 0));
-
-	// function placeObstacles() {
-	// 	for (let y = 0; y < height; y += 4) {
-	// 		// Saltar 5 filas cada vez
-	// 		for (let x = 0; x < width; x += 4) {
-	// 			// Saltar 5 columnas cada vez
-	// 			// Crear un grupo de 5x5 obstáculos
-	// 			for (let dy = 0; dy < 4; dy++) {
-	// 				for (let dx = 0; dx < 4; dx++) {
-	// 					if (x + dx < width && y + dy < height) {
-	// 						map[y + dy][x + dx] = 10; // Establecer como obstáculo
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	// Llamar a la función para agrupar obstáculos
-	// placeObstacles();
 
 	// Función para verificar si una posición es válida
 	function isValid(x, y) {
@@ -42,6 +23,7 @@ export function generateMap(width, height, start, end) {
 			for (let dy = 0; dy < pathSize; dy++) {
 				if (x + dx < width && y + dy < height) {
 					map[y + dy][x + dx] = 0;
+					flattenedDots.push(createDot(x + dx, y + dy));
 				}
 			}
 		}
@@ -114,11 +96,12 @@ export function generateMap(width, height, start, end) {
 	map[end.y - 2][end.x - 1] = 0;
 
 	const flattenedMap = map.flat();
+	// const flattenedDots = createDots(flattenedMap);
 	const lvl = {
 		layers: [
 			{
 				opacity: 1,
-				name: 'Tile Layer 1',
+				name: 'Tiles',
 				width: width,
 				data: flattenedMap,
 				height: height,
@@ -130,7 +113,7 @@ export function generateMap(width, height, start, end) {
 			},
 			{
 				opacity: 1,
-				name: 'Object Layer 1',
+				name: 'Objects',
 				visible: true,
 				objects: [
 					{
@@ -158,6 +141,19 @@ export function generateMap(width, height, start, end) {
 						type: 'goal',
 						id: 2,
 					},
+					...flattenedDots,
+					// {
+					// 	name: 'dot',
+					// 	width: 16,
+					// 	height: 16,
+					// 	visible: true,
+					// 	gid: 30,
+					// 	y: 64,
+					// 	x: 64,
+					// 	rotation: 0,
+					// 	type: 'dot',
+					// 	id: 3,
+					// },
 				],
 				draworder: 'topdown',
 				y: 0,
@@ -187,4 +183,23 @@ export function generateMap(width, height, start, end) {
 	};
 
 	return lvl;
+}
+
+function createDots(flattenedMap) {
+	return [];
+}
+
+function createDot(x, y) {
+	return {
+		name: 'dot',
+		width: 16,
+		height: 16,
+		visible: true,
+		gid: 30,
+		y: x,
+		x: y,
+		rotation: 0,
+		type: 'dot',
+		id: 3,
+	};
 }

@@ -4,6 +4,7 @@ import { startGame, inProgress } from './main';
 
 var player = {},
 	cells = [],
+	dots = [],
 	win = false,
 	gameOver = false;
 
@@ -35,6 +36,23 @@ function onkey(ev, key, down) {
 function update() {
 	if (inProgress) movePlayer(player.orientation);
 	renderCamera();
+}
+
+function renderDot(ctx, frame) {
+	ctx.globalAlpha = 0.45 + tweenTreasure(frame, 60);
+	for (var n = 0; n < dots.length; n++) {
+		var t = dots[n];
+		// console.log('t', t);
+		// if (!t.collected) Utils.drawDiamond(t.x, t.y, 15, 13, ctx, DIAMOND_COLORS[t.color]);
+		drawDot(t.y * 16, t.x * 16, ctx, ['#E3170D', '#9D1309', '#CCC']);
+	}
+	ctx.globalAlpha = 1;
+}
+
+function tweenTreasure(frame, duration) {
+	var half = duration / 2;
+	var pulse = frame % duration;
+	return pulse < half ? pulse / half : 1 - (pulse - half) / half;
 }
 
 function changePlayerDirection() {
@@ -116,32 +134,17 @@ function renderCamera() {
 
 	ctx.clearRect(0, 0, width, height);
 
-	renderMap({ ctx, cameraX, cameraY, viewW, viewH });
+	// renderMap({ ctx, cameraX, cameraY, viewW, viewH });
+	renderMap(ctx);
 	renderPlayer(ctx);
+	renderDot(ctx, frame);
 }
 
-function renderMap({ ctx, cameraX, cameraY, viewW, viewH }) {
-	// ctx.globalCompositeOperation = 'destination-out'; // Hace que el área del gradiente sea transparente
-	// ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-	// ctx.beginPath();
-	// ctx.arc(30, 30, 100, 0, Math.PI * 2); // Radio del círculo de luz
-	// ctx.fill();
-
-	for (var y = cameraY; y < cameraY + viewH; y++) {
-		for (var x = cameraX; x < cameraX + viewW; x++) {
+function renderMap(ctx) {
+	// console.log('renderMap');
+	for (var y = 0; y < MAP.th; y++) {
+		for (var x = 0; x < MAP.tw; x++) {
 			var cell = tcell(x, y, false);
-
-			// var gradient = ctx.createRadialGradient(
-			// 		cameraX + 8,
-			// 		cameraY + 8,
-			// 		50,
-			// 		cameraX + 8,
-			// 		cameraY + 8,
-			// 		200
-			// 	);
-			// 	gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-			// 	gradient.addColorStop(1, 'rgba(0, 0, 0, 0.9)');
-
 			if (cell === 0) {
 				ctx.drawImage(assets, 0, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
 			} else if (cell) {
@@ -151,6 +154,37 @@ function renderMap({ ctx, cameraX, cameraY, viewW, viewH }) {
 	}
 }
 
+// function renderMap({ ctx, cameraX, cameraY, viewW, viewH }) {
+// 	// ctx.globalCompositeOperation = 'destination-out'; // Hace que el área del gradiente sea transparente
+// 	// ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+// 	// ctx.beginPath();
+// 	// ctx.arc(30, 30, 100, 0, Math.PI * 2); // Radio del círculo de luz
+// 	// ctx.fill();
+
+// 	for (var y = cameraY; y < cameraY + viewH; y++) {
+// 		for (var x = cameraX; x < cameraX + viewW; x++) {
+// 			var cell = tcell(x, y, false);
+
+// 			// var gradient = ctx.createRadialGradient(
+// 			// 		cameraX + 8,
+// 			// 		cameraY + 8,
+// 			// 		50,
+// 			// 		cameraX + 8,
+// 			// 		cameraY + 8,
+// 			// 		200
+// 			// 	);
+// 			// 	gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+// 			// 	gradient.addColorStop(1, 'rgba(0, 0, 0, 0.9)');
+
+// 			if (cell === 0) {
+// 				ctx.drawImage(assets, 0, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
+// 			} else if (cell) {
+// 				ctx.drawImage(assets, (cell - 1) * TILE, 0, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
+// 			}
+// 		}
+// 	}
+// }
+
 function renderPlayer(ctx) {
 	var or = player.orientation === 'right' ? 12 : 11;
 	ctx.drawImage(assets, or * TILE, 0, TILE, TILE, player.x, player.y, TILE, TILE);
@@ -159,6 +193,7 @@ function renderPlayer(ctx) {
 function setup(map) {
 	player = {};
 	cells = [];
+	dots = [];
 	win = false;
 	gameOver = false;
 
@@ -173,9 +208,13 @@ function setup(map) {
 			case 'player':
 				player = entity;
 				break;
+			case 'dot':
+				dots.push(entity);
+				break;
 		}
 	}
 
+	console.log('dots', dots);
 	cells = data;
 }
 
@@ -186,13 +225,15 @@ function setupEntity(obj) {
 		x: obj.x,
 		y: obj.y,
 
-		player: obj.type == 'player',
+		player: obj.type === 'player',
+		dot: obj.type === 'dot',
 		type: obj.properties.type,
 		orientation: obj.orientation,
 		start: {
 			x: obj.x,
 			y: obj.y,
 		},
+		// collected: 0
 	};
 
 	return entity;
@@ -215,6 +256,14 @@ function frame() {
 	last = now;
 	counter++;
 	requestAnimationFrame(frame, canvas);
+}
+
+function drawDot(x, y, ctx, colors) {
+	ctx.fillStyle = colors[0];
+	ctx.beginPath();
+	ctx.arc(x + 8, y + 8, 2, 0, Math.PI * 2);
+	// ctx.fillRect(x + 8, y + 8, 16, 16);
+	ctx.fill();
 }
 
 export { setup, frame, onkey };

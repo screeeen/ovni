@@ -29,9 +29,9 @@ export function genNewMap() {
 
 	const lvl_0 = generateMap(width, height, start, end);
 
-	console.table('* *', lvl_0.layers[0].data);
-	console.table('* *', width, ' ', height);
-	console.table('* *', MAP.tw, ' ', MAP.th);
+	console.table('* * ', lvl_0.layers[0].data);
+	console.table('* * w h', width, ' ', height);
+	console.table('* * tw th', MAP.tw, ' ', MAP.th);
 	return lvl_0;
 }
 
