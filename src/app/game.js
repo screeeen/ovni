@@ -36,15 +36,16 @@ function onkey(ev, key, down) {
 function update() {
 	if (inProgress) movePlayer(player.orientation);
 	renderCamera();
+	checkDot();
 }
 
 function renderDot(ctx, frame) {
 	ctx.globalAlpha = 0.45 + tweenTreasure(frame, 60);
 	for (var n = 0; n < dots.length; n++) {
 		var t = dots[n];
-		// console.log('t', t);
+
 		// if (!t.collected) Utils.drawDiamond(t.x, t.y, 15, 13, ctx, DIAMOND_COLORS[t.color]);
-		drawDot(t.y * 16, t.x * 16, ctx, ['#E3170D', '#9D1309', '#CCC']);
+		if (!t.collected) drawDot(t.y * 16, t.x * 16, ctx, ['#E3170D', '#9D1309', '#CCC']);
 	}
 	ctx.globalAlpha = 1;
 }
@@ -214,7 +215,6 @@ function setup(map) {
 		}
 	}
 
-	console.log('dots', dots);
 	cells = data;
 }
 
@@ -233,7 +233,7 @@ function setupEntity(obj) {
 			x: obj.x,
 			y: obj.y,
 		},
-		// collected: 0
+		collected: 0,
 	};
 
 	return entity;
@@ -267,3 +267,29 @@ function drawDot(x, y, ctx, colors) {
 }
 
 export { setup, frame, onkey };
+
+function checkDot() {
+	for (var n = 0; n < dots.length; n++) {
+		var t = dots[n];
+
+		if (
+			t.collected !== false &&
+			overlap(player.x, player.y, TILE, TILE, t.y * TILE, t.x * TILE, TILE, TILE)
+		) {
+			console.log('dot +', t.collected);
+			collectTreasure(t);
+		}
+	}
+}
+
+function overlap(x1, y1, w1, h1, x2, y2, w2, h2) {
+	// debugger;
+	return !(x1 + w1 - 1 < x2 || x2 + w2 - 1 < x1 || y1 + h1 - 1 < y2 || y2 + h2 - 1 < y1);
+}
+
+function collectTreasure(t) {
+	player.collected++;
+	t.collected = true;
+	console.log('player.collected', player.collected);
+	console.log('t.collected', t.collected);
+}
